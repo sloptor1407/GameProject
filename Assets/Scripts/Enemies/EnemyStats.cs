@@ -1,9 +1,33 @@
 using UnityEngine;
+using System;
 
 public class EnemyStats : MonoBehaviour
 {
+    [Header("Stats")]
+    [SerializeField] EnemyType enemyType;
+    [SerializeField] int baseHealth = 3;
+    [SerializeField] int baseDamage = 1;
+
+    public int CurrentHealth { get; private set; }
+    public int BaseDamage => baseDamage;
+    public bool IsAlive => CurrentHealth > 0;
+
+    public event Action OnDeath;
+    public event Action<int> OnDamageReceived;
+
+    void Awake()
+    {
+        CurrentHealth = baseHealth;
+    }
+
     public void ReceiveDamage(int amount)
     {
-        Debug.Log($"Enemigo recibe {amount} de daño");
+        if (!IsAlive) return;
+
+        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        OnDamageReceived?.Invoke(CurrentHealth);
+
+        if (CurrentHealth <= 0)
+            OnDeath?.Invoke();
     }
 }
