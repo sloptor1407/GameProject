@@ -525,6 +525,7 @@ GameObject:
   - component: {fileID: 2147461797}
   - component: {fileID: 2147461796}
   - component: {fileID: 2147461795}
+  - component: {fileID: 2147461798}
   m_Layer: 0
   m_Name: _Managers
   m_TagString: Untagged
@@ -575,6 +576,18 @@ Transform:
   - {fileID: 451328179}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2147461798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147461794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d118c74389a0b7d46857eba9e3c4ff8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameTimer
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
