@@ -34,7 +34,7 @@ public class PlayerRespawn : MonoBehaviour
     {
         deathCount++;
         controller.enabled = false;
-        StartCoroutine(RespawnRoutine());
+        LevelResultsManager.Instance?.ShowGameOver();
     }
 
     public void SetRespawnPoint(Vector2 point)

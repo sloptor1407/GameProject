@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 5148614871057591125}
   - component: {fileID: 3062331441497802395}
   - component: {fileID: 4736542349413759882}
+  - component: {fileID: 7527216834820854099}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -454,6 +455,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
   respawnDelay: 2
+--- !u!114 &7527216834820854099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7487198706323891768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a99f69302dcc61046bacc1c2865852cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  meleeHitPoint: {fileID: 670441090913928672}
+  meleeRange: 0.8
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  projectilePrefab: {fileID: 5564063400273853216, guid: 39f938535d220bd4697bf6207b97dfac, type: 3}
+  firePoint: {fileID: 1777874295842254512}
+  meleeWeapon: {fileID: 11400000, guid: 2d0a3a9175ee16340b2bd2ee1804f67f, type: 2}
+  rangeWeapon: {fileID: 11400000, guid: 366e0678d3db3ad42ace0af9d46e019b, type: 2}
 --- !u!1 &8009434633200791149
 GameObject:
   m_ObjectHideFlags: 0
