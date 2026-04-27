@@ -110,6 +110,7 @@ public class DB_Checkpoint
     public float posX { get; set; }
     public float posY { get; set; }
     public int codNivel { get; set; }
+    public bool activado { get; set; }
 }
 
 [Table("Plataforma")]

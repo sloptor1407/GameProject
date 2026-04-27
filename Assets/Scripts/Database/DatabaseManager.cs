@@ -1,6 +1,8 @@
 using UnityEngine;
 using SQLite;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 public class DatabaseManager : MonoBehaviour
 {
@@ -177,6 +179,32 @@ public class DatabaseManager : MonoBehaviour
                 obtenido = obtenido
             });
         }
+    }
+
+    // Perfiles
+
+    public List<DB_Jugador> GetTodosLosJugadores()
+    {
+        return db.Table<DB_Jugador>().ToList();
+    }
+
+    public void EliminarJugador(int codJugador)
+    {
+        db.Delete<DB_Jugador>(codJugador);
+        // Elimina datos relacionados
+        db.Execute("DELETE FROM Juega WHERE codJugador = ?", codJugador);
+        db.Execute("DELETE FROM Equipa WHERE codJugador = ?", codJugador);
+        db.Execute("DELETE FROM Tiene WHERE codJugador = ?", codJugador);
+    }
+
+    public int GetNivelMaxDesbloqueado(int codJugador)
+    {
+        var partidas = db.Table<DB_Juega>()
+            .Where(j => j.codJugador == codJugador)
+            .ToList();
+
+        if (partidas.Count == 0) return 1;
+        return Mathf.Min(partidas.Max(j => j.codNivel) + 1, 3);
     }
 
     void OnDestroy()
