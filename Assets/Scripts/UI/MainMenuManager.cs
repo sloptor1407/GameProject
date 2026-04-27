@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] GameObject mainMenuPanel;
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject levelSelectPanel;
+
+    [Header("Player Name")]
+    [SerializeField] TMP_InputField nameInputField;
 
     void Start()
     {
@@ -31,8 +35,22 @@ public class MainMenuManager : MonoBehaviour
 
     public void ShowLevelSelect()
     {
+        string nombre = nameInputField.text.Trim();
+        if (string.IsNullOrEmpty(nombre))
+        {
+            Debug.Log("Introduce un nombre");
+            return;
+        }
+
+        // Crea o reutiliza el jugador
+        if (!GameSession.HasActiveSession)
+        {
+            int codJugador = DatabaseManager.Instance.CrearJugador(nombre);
+            GameSession.CodJugador = codJugador;
+            GameSession.NombreJugador = nombre;
+        }
+
         mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(false);
         levelSelectPanel.SetActive(true);
     }
 

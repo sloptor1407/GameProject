@@ -719,7 +719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &334876940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -757,7 +757,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &335252143
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3647,7 +3647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1920564462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3797,8 +3797,8 @@ MonoBehaviour:
   gameOverPanel: {fileID: 1920564461}
   gameCompletePanel: {fileID: 335252142}
   levelCompleteTimeText: {fileID: 0}
-  totalTimeText: {fileID: 0}
-  totalDeathsText: {fileID: 0}
+  totalTimeText: {fileID: 1123583052}
+  totalDeathsText: {fileID: 699178674}
 --- !u!114 &2114938519
 MonoBehaviour:
   m_ObjectHideFlags: 0

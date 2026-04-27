@@ -33,6 +33,7 @@ public class PlayerRespawn : MonoBehaviour
     void HandleDeath()
     {
         deathCount++;
+        GameSession.MuertesTotales++;
         controller.enabled = false;
         LevelResultsManager.Instance?.ShowGameOver();
     }
