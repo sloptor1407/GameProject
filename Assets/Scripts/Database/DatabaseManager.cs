@@ -49,6 +49,8 @@ public class DatabaseManager : MonoBehaviour
 
     void SeedData()
     {
+        Debug.Log($"Jugadores en BD: {db.Table<DB_Jugador>().Count()}");
+
         // Solo inserta si las tablas están vacías
         if (db.Table<DB_Nivel>().Count() == 0)
         {

@@ -16,10 +16,20 @@ public class ProfileManager : MonoBehaviour
     [Header("Create Profile")]
     [SerializeField] TMP_InputField nameInputField;
 
+    MainMenuManager menuManager;
+
+    void Awake()
+    {
+        menuManager = GetComponent<MainMenuManager>();
+    }
+
     void Start()
     {
-        ShowProfiles();
+        HideAllProfilePanels();
+        LoadProfiles();
     }
+
+    // Navegación
 
     public void ShowProfiles()
     {
@@ -35,21 +45,29 @@ public class ProfileManager : MonoBehaviour
         nameInputField.text = "";
     }
 
+    public void HideAllProfilePanels()
+    {
+        profilesPanel.SetActive(false);
+        createProfilePanel.SetActive(false);
+    }
+
+    // Lógica
+
     void LoadProfiles()
     {
-        // Limpia la lista anterior
         foreach (Transform child in profilesContainer)
             Destroy(child.gameObject);
 
         List<DB_Jugador> jugadores = DatabaseManager.Instance.GetTodosLosJugadores();
+        Debug.Log($"Perfiles encontrados: {jugadores.Count}");
 
         if (jugadores.Count == 0)
         {
-            // Si no hay perfiles, va directo a crear uno
             ShowCreateProfile();
             return;
         }
 
+        profilesPanel.SetActive(true);
         foreach (DB_Jugador jugador in jugadores)
         {
             GameObject btn = Instantiate(profileButtonPrefab, profilesContainer);
@@ -63,13 +81,11 @@ public class ProfileManager : MonoBehaviour
         GameSession.CodJugador = jugador.codJugador;
         GameSession.NombreJugador = jugador.nombreJugador;
         GameSession.MuertesTotales = 0;
+        GameSession.MaxNivelDesbloqueado =
+            DatabaseManager.Instance.GetNivelMaxDesbloqueado(jugador.codJugador);
 
-        // Actualiza nivel máximo desbloqueado
-        int maxNivel = DatabaseManager.Instance.GetNivelMaxDesbloqueado(jugador.codJugador);
-        GameSession.MaxNivelDesbloqueado = maxNivel;
-
-        // Cierra perfiles y abre menú principal
-        GetComponent<MainMenuManager>().ShowMainMenu();
+        HideAllProfilePanels();
+        menuManager.ShowMainMenu();
     }
 
     public void CreateProfile()
@@ -87,7 +103,8 @@ public class ProfileManager : MonoBehaviour
         GameSession.MuertesTotales = 0;
         GameSession.MaxNivelDesbloqueado = 1;
 
-        GetComponent<MainMenuManager>().ShowMainMenu();
+        HideAllProfilePanels();
+        menuManager.ShowMainMenu();
     }
 
     public void DeleteProfile(int codJugador)

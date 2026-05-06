@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -9,12 +10,17 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject levelSelectPanel;
 
-    [Header("Player Name")]
-    [SerializeField] TMP_InputField nameInputField;
+    [Header("Level Buttons")]
+    [SerializeField] Button level1Button;
+    [SerializeField] Button level2Button;
+    [SerializeField] Button level3Button;
 
     void Start()
     {
-        ShowMainMenu();
+        // Todo desactivado — ProfileManager se encarga de activar lo correcto
+        mainMenuPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        levelSelectPanel.SetActive(false);
     }
 
     // Navegación
@@ -35,23 +41,14 @@ public class MainMenuManager : MonoBehaviour
 
     public void ShowLevelSelect()
     {
-        string nombre = nameInputField.text.Trim();
-        if (string.IsNullOrEmpty(nombre))
-        {
-            Debug.Log("Introduce un nombre");
-            return;
-        }
-
-        // Crea o reutiliza el jugador
-        if (!GameSession.HasActiveSession)
-        {
-            int codJugador = DatabaseManager.Instance.CrearJugador(nombre);
-            GameSession.CodJugador = codJugador;
-            GameSession.NombreJugador = nombre;
-        }
-
         mainMenuPanel.SetActive(false);
+        settingsPanel.SetActive(false);
         levelSelectPanel.SetActive(true);
+
+        int maxNivel = GameSession.MaxNivelDesbloqueado;
+        if (level1Button != null) level1Button.interactable = maxNivel >= 1;
+        if (level2Button != null) level2Button.interactable = maxNivel >= 2;
+        if (level3Button != null) level3Button.interactable = maxNivel >= 3;
     }
 
     // Niveles

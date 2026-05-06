@@ -23,6 +23,7 @@ public class Projectile : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             other.GetComponent<EnemyStats>()?.ReceiveDamage(damage);
+            other.GetComponent<BossController>()?.ReceiveDamage(damage);
             Destroy(gameObject);
         }
         else if (other.CompareTag("Ground"))

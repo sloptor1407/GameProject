@@ -61,6 +61,7 @@ public class PlayerCombat : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             hit.GetComponent<EnemyStats>()?.ReceiveDamage(meleeWeapon.Attack());
+            hit.GetComponent<BossController>()?.ReceiveDamage(meleeWeapon.Attack());
         }
 
         yield return new WaitForSeconds(meleeWeapon.cooldown);
