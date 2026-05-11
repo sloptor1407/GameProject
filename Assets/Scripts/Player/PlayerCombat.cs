@@ -103,4 +103,18 @@ public class PlayerCombat : MonoBehaviour
             Gizmos.DrawWireSphere(meleeHitPoint.position, meleeRange);
         }
     }
+
+    public void UpgradeWeapon(WeaponType type, int damageBonus)
+    {
+        if (type == WeaponType.MELEE && meleeWeapon != null)
+        {
+            meleeWeapon.damage += damageBonus;
+            Debug.Log($"Arma melee mejorada: {meleeWeapon.damage} de daño");
+        }
+        else if (type == WeaponType.RANGE && rangeWeapon != null)
+        {
+            rangeWeapon.damage += damageBonus;
+            Debug.Log($"Arma a distancia mejorada: {rangeWeapon.damage} de daño");
+        }
+    }
 }

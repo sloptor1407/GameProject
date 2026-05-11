@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -7,13 +8,24 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
 
+    [Header("Controls Display")]
+    [SerializeField] TextMeshProUGUI controlsText;
+
     void Start()
     {
-        // Carga valores guardados
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
         sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
-
         ApplyVolumes();
+
+        if (controlsText != null)
+            controlsText.text =
+                "MOVER:         A / D\n" +
+                "SALTAR:        Space\n" +
+                "DOBLE SALTO:   Space (en el aire)\n" +
+                "DASH:          Left Shift\n" +
+                "ATAQUE MELEE:  J\n" +
+                "ATAQUE RANGO:  K\n" +
+                "PAUSA:         Escape";   
     }
 
     public void OnMusicVolumeChanged(float value)

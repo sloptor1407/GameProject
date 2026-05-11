@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] float moveSpeed = 8f;
-    [SerializeField] float jumpForce = 16f;
+    [SerializeField] float jumpForce = 18f;
     [SerializeField] float dashForce = 18f;
     [SerializeField] float dashDuration = 0.15f;
     [SerializeField] float dashCooldown = 1f;
