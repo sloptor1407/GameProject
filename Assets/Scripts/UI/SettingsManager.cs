@@ -13,8 +13,17 @@ public class SettingsManager : MonoBehaviour
 
     void Start()
     {
+        // Desactiva eventos temporalmente
+        musicSlider.onValueChanged.RemoveAllListeners();
+        sfxSlider.onValueChanged.RemoveAllListeners();
+
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
         sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        // Vuelve a añadir los listeners
+        musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+        sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
         ApplyVolumes();
 
         if (controlsText != null)
@@ -25,7 +34,7 @@ public class SettingsManager : MonoBehaviour
                 "DASH:          Left Shift\n" +
                 "ATAQUE MELEE:  J\n" +
                 "ATAQUE RANGO:  K\n" +
-                "PAUSA:         Escape";   
+                "PAUSA:         Escape";
     }
 
     public void OnMusicVolumeChanged(float value)

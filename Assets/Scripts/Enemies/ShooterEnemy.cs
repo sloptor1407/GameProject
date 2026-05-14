@@ -36,6 +36,9 @@ public class ShooterEnemy : Enemy
     {
         canShoot = false;
 
+        // Activa animación de ataque
+        GetComponentInChildren<ShooterEnemyAnimator>()?.TriggerAttack();
+
         if (projectilePrefab != null && firePoint != null && player != null)
         {
             Vector2 direction = (player.position - firePoint.position).normalized;

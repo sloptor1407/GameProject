@@ -3,18 +3,21 @@ using UnityEngine;
 public class PatrolEnemy : Enemy
 {
     [Header("Patrol")]
-    [SerializeField] Transform pointA;
-    [SerializeField] Transform pointB;
+    [SerializeField] float patrolDistance = 3f;
     [SerializeField] float waitTime = 1f;
 
-    Transform currentTarget;
+    float leftLimit;
+    float rightLimit;
+    bool movingRight = true;
     float waitTimer;
     bool isWaiting;
 
     protected override void Start()
     {
         base.Start();
-        currentTarget = pointA;
+        // Calcula los límites basándose en la posición inicial
+        leftLimit = transform.position.x - patrolDistance;
+        rightLimit = transform.position.x + patrolDistance;
     }
 
     protected override void HandleBehavior()
@@ -26,13 +29,21 @@ public class PatrolEnemy : Enemy
             return;
         }
 
-        Vector2 direction = (currentTarget.position - transform.position).normalized;
+        Vector2 direction = movingRight ? Vector2.right : Vector2.left;
         Move(direction);
 
-        // Llega al punto destino
-        if (Vector2.Distance(transform.position, currentTarget.position) < 0.2f)
+        float posX = transform.position.x;
+
+        if (movingRight && posX >= rightLimit)
         {
-            currentTarget = currentTarget == pointA ? pointB : pointA;
+            movingRight = false;
+            isWaiting = true;
+            waitTimer = waitTime;
+            rb.linearVelocity = Vector2.zero;
+        }
+        else if (!movingRight && posX <= leftLimit)
+        {
+            movingRight = true;
             isWaiting = true;
             waitTimer = waitTime;
             rb.linearVelocity = Vector2.zero;

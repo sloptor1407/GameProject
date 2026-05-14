@@ -68,12 +68,13 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
-    // ── Llamado desde PlayerInputHandler ──────────────────────────
+    // Llamado desde PlayerInputHandler
 
     public void SetMoveInput(float value) => moveInput = value;
 
     public void Jump()
     {
+        AudioManager.Instance?.PlayJump();
         if (isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(DashRoutine());
     }
 
-    // ── Movimiento ─────────────────────────────────────────────────
+    // Movimiento
 
     void Move()
     {
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour
 
     System.Collections.IEnumerator DashRoutine()
     {
+        AudioManager.Instance?.PlayDash();
         isDashing = true;
         canDash = false;
         float dir = facingRight ? 1f : -1f;
@@ -126,7 +128,7 @@ public class PlayerController : MonoBehaviour
         dashCooldownTimer = dashCooldown;
     }
 
-    // ── Checks ─────────────────────────────────────────────────────
+    // Checks
 
     void HandleGroundCheck()
     {
@@ -183,7 +185,7 @@ public class PlayerController : MonoBehaviour
             transform.localScale.z);
     }
 
-    // ── Gizmos (visibles en el editor) ────────────────────────────
+    // Gizmos (visibles en el editor)
 
     void OnDrawGizmosSelected()
     {

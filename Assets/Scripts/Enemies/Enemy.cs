@@ -49,9 +49,11 @@ public abstract class Enemy : MonoBehaviour
     public virtual void Move(Vector2 direction)
     {
         rb.linearVelocity = new Vector2(direction.x * moveSpeed, rb.linearVelocity.y);
-        // Flip del sprite según dirección
-        if (direction.x > 0) transform.localScale = new Vector3(1, 1, 1);
-        else if (direction.x < 0) transform.localScale = new Vector3(-1, 1, 1);
+
+        if (direction.x > 0)
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        else if (direction.x < 0)
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
     }
 
     protected bool PlayerInRange(float range)
@@ -64,7 +66,7 @@ public abstract class Enemy : MonoBehaviour
     {
         isAlive = false;
         rb.linearVelocity = Vector2.zero;
-        // Desactiva colliders
+        rb.bodyType = RigidbodyType2D.Kinematic;
         foreach (Collider2D col in GetComponents<Collider2D>())
             col.enabled = false;
         Destroy(gameObject, 0.5f);

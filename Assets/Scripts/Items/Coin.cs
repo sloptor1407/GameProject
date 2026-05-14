@@ -6,6 +6,7 @@ public class Coin : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        AudioManager.Instance?.PlayCoin();
         if (!other.CompareTag("Player")) return;
 
         HUDManager.Instance?.UpdateCoins(value);

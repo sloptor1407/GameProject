@@ -17,7 +17,7 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
-        // Todo desactivado — ProfileManager se encarga de activar lo correcto
+        AudioManager.Instance?.PlayMenuMusic();
         mainMenuPanel.SetActive(false);
         settingsPanel.SetActive(false);
         levelSelectPanel.SetActive(false);

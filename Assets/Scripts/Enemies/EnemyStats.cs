@@ -12,8 +12,8 @@ public class EnemyStats : MonoBehaviour
     public int BaseDamage => baseDamage;
     public bool IsAlive => CurrentHealth > 0;
 
-    public event Action OnDeath;
     public event Action<int> OnDamageReceived;
+    public event Action OnDeath;
 
     void Awake()
     {

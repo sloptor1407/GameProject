@@ -373,8 +373,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 8
   jumpForce: 16
-  dashForce: 18
-  dashDuration: 0.15
+  dashForce: 20
+  dashDuration: 0.25
   dashCooldown: 1
   wallJumpForceX: 10
   wallJumpForceY: 14

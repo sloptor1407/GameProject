@@ -48,6 +48,7 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator MeleeRoutine()
     {
+        AudioManager.Instance?.PlayMelee();
         canMeleeAttack = false;
         animatorController?.TriggerMeleeAttack();
 
@@ -70,6 +71,7 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator RangeRoutine()
     {
+        AudioManager.Instance?.PlayRange();
         canRangeAttack = false;
         animatorController?.TriggerRangeAttack();
 

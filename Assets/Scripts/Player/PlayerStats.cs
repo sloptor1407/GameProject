@@ -22,6 +22,7 @@ public class PlayerStats : MonoBehaviour
 
     public bool ReceiveDamage(int amount)
     {
+        AudioManager.Instance?.PlayDamage();
         if (!IsAlive) return false;
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
