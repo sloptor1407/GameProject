@@ -35,7 +35,10 @@ public class LevelResultsManager : MonoBehaviour
         Time.timeScale = 0f;
 
         float time = GameTimer.Instance?.ElapsedTime ?? 0f;
-        int nivel = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        int nivel = SceneManager.GetActiveScene().buildIndex;
+
+        // Desbloquear siguiente nivel
+        GameManager.Instance?.UnlockNextLevel();
 
         // Guardar en BD
         if (GameSession.HasActiveSession)
@@ -53,7 +56,6 @@ public class LevelResultsManager : MonoBehaviour
         }
 
         levelCompleteTimeText.text = $"Tiempo: {FormatTime(time)}";
-
         levelCompletePanel.SetActive(true);
     }
 

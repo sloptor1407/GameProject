@@ -32,8 +32,19 @@ public class GameManager : MonoBehaviour
 
     public void UnlockNextLevel()
     {
-        if (CurrentLevel >= MaxLevelUnlocked)
-            MaxLevelUnlocked = CurrentLevel + 1;
+        int siguiente = SceneManager.GetActiveScene().buildIndex + 1;
+        if (siguiente > GameSession.MaxNivelDesbloqueado)
+        {
+            GameSession.MaxNivelDesbloqueado = siguiente;
+            // Persistir en BD
+            if (GameSession.HasActiveSession)
+                DatabaseManager.Instance?.GuardarPartida(
+                    GameSession.CodJugador,
+                    SceneManager.GetActiveScene().buildIndex,
+                    GameTimer.Instance?.ElapsedTime ?? 0f,
+                    GameSession.MuertesTotales
+                );
+        }
     }
 
     public void GameOver()

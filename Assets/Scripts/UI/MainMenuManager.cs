@@ -55,6 +55,12 @@ public class MainMenuManager : MonoBehaviour
 
     public void LoadLevel(int buildIndex)
     {
+        // Verificar que el nivel está desbloqueado
+        if (buildIndex > GameSession.MaxNivelDesbloqueado)
+        {
+            Debug.Log($"Nivel {buildIndex} bloqueado");
+            return;
+        }
         SceneManager.LoadScene(buildIndex);
     }
 
