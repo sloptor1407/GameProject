@@ -51399,6 +51399,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1050713832084731012, guid: 8f4c2610d99eeed4a805fc762bc0d997, type: 3}
+      propertyPath: m_Color.b
+      value: 0.53933334
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050713832084731012, guid: 8f4c2610d99eeed4a805fc762bc0d997, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050713832084731012, guid: 8f4c2610d99eeed4a805fc762bc0d997, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2891559171456127948, guid: 8f4c2610d99eeed4a805fc762bc0d997, type: 3}
       propertyPath: m_Name
       value: LevelExit

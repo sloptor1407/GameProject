@@ -1932,7 +1932,7 @@ Transform:
   m_GameObject: {fileID: 482340980}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.5, z: 0}
+  m_LocalPosition: {x: -1.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -75927,6 +75927,22 @@ PrefabInstance:
       propertyPath: checkpointId
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6555937803579437098, guid: 9b2c4c5f723a4054cb4931b102762ed9, type: 3}
+      propertyPath: m_Size.x
+      value: 0.7886505
+      objectReference: {fileID: 0}
+    - target: {fileID: 6555937803579437098, guid: 9b2c4c5f723a4054cb4931b102762ed9, type: 3}
+      propertyPath: m_Size.y
+      value: 1.9169769
+      objectReference: {fileID: 0}
+    - target: {fileID: 6555937803579437098, guid: 9b2c4c5f723a4054cb4931b102762ed9, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.000038146973
+      objectReference: {fileID: 0}
+    - target: {fileID: 6555937803579437098, guid: 9b2c4c5f723a4054cb4931b102762ed9, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.027189255
+      objectReference: {fileID: 0}
     - target: {fileID: 9165926474926935652, guid: 9b2c4c5f723a4054cb4931b102762ed9, type: 3}
       propertyPath: m_Name
       value: Checkpoint (1)
@@ -77595,8 +77611,8 @@ Transform:
   m_GameObject: {fileID: 2016820059}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.53, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1177359598}

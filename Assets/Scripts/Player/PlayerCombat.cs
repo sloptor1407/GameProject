@@ -8,6 +8,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] Transform meleeHitPoint;
     [SerializeField] float meleeRange = 0.8f;
     [SerializeField] LayerMask enemyLayer;
+    [SerializeField] Animator meleeSlashAnimator;
 
     [Header("Range")]
     [SerializeField] GameObject projectilePrefab;
@@ -48,24 +49,30 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator MeleeRoutine()
     {
-        AudioManager.Instance?.PlayMelee();
         canMeleeAttack = false;
+        AudioManager.Instance?.PlayMelee();
+
         animatorController?.TriggerMeleeAttack();
 
-        // Espera un poco para que coincida con el frame de impacto
-        yield return new WaitForSeconds(0.15f);
+        meleeHitPoint.GetComponent<SpriteRenderer>().enabled = true;
+        meleeSlashAnimator.Play("SlashAnimation", 0, 0f);
 
-        // Detecta enemigos en rango
         Collider2D[] hits = Physics2D.OverlapCircleAll(
-            meleeHitPoint.position, meleeRange, enemyLayer);
+            meleeHitPoint.position, meleeRange,
+            LayerMask.GetMask("Enemy"));
+
+        Debug.Log($"Hits detectados: {hits.Length}");
+        foreach (Collider2D hit in hits)
+            Debug.Log($"Hit: {hit.gameObject.name}");
 
         foreach (Collider2D hit in hits)
         {
-            hit.GetComponent<EnemyStats>()?.ReceiveDamage(meleeWeapon.Attack());
-            hit.GetComponent<BossController>()?.ReceiveDamage(meleeWeapon.Attack());
+            hit.GetComponent<EnemyStats>()?.ReceiveDamage(meleeWeapon.damage);
+            hit.GetComponent<BossController>()?.ReceiveDamage(meleeWeapon.damage);
         }
 
         yield return new WaitForSeconds(meleeWeapon.cooldown);
+        meleeHitPoint.GetComponent<SpriteRenderer>().enabled = false;
         canMeleeAttack = true;
     }
 

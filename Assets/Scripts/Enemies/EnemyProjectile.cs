@@ -29,5 +29,10 @@ public class EnemyProjectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        // Ignorar colisiones con enemigos
+        else if (other.CompareTag("Enemy"))
+        {
+            return;
+        }
     }
 }
