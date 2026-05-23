@@ -26,7 +26,7 @@ public class Projectile : MonoBehaviour
             other.GetComponent<BossController>()?.ReceiveDamage(damage);
             Destroy(gameObject);
         }
-        else if (other.CompareTag("Ground"))
+        else if (((1 << other.gameObject.layer) & LayerMask.GetMask("Ground")) != 0)
         {
             Destroy(gameObject);
         }

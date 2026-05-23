@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -12,9 +13,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashCooldown = 1f;
 
     [Header("Wall Jump")]
-    [SerializeField] float wallJumpForceX = 10f;
-    [SerializeField] float wallJumpForceY = 14f;
+    [SerializeField] float wallJumpForceX = 22f;
+    [SerializeField] float wallJumpForceY = 22f;
     [SerializeField] float wallSlideSpeed = 2f;
+    [SerializeField] float wallJumpLockTime = 0.4f;
 
     [Header("Checks")]
     [SerializeField] Transform groundCheck;
@@ -33,10 +35,15 @@ public class PlayerController : MonoBehaviour
     bool isDashing;
     bool canDash = true;
     bool isBraking;
+    bool isWallJumping;
 
+    int wallDirection;
     float dashTimer;
     float dashCooldownTimer;
     float moveInput;
+    float wallJumpCoyoteTime = 0.15f;
+    float wallJumpCoyoteTimer;
+    bool wasTouchingWall;
     bool facingRight = true;
 
     public bool IsGrounded => isGrounded;
@@ -54,18 +61,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (isDashing) return;
-
         HandleGroundCheck();
         HandleWallCheck();
         HandleWallSlide();
         HandleDashCooldown();
-        HandleFlip();
+        if (!isWallJumping) HandleFlip();
     }
 
     void FixedUpdate()
     {
         if (isDashing) return;
-        Move();
+        if (!isWallJumping) Move();
     }
 
     // Llamado desde PlayerInputHandler
@@ -74,7 +80,6 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        AudioManager.Instance?.PlayJump();
         if (isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -106,25 +111,63 @@ public class PlayerController : MonoBehaviour
 
     void WallJump()
     {
-        float direction = isTouchingWallRight ? -1f : 1f;
-        rb.linearVelocity = new Vector2(wallJumpForceX * direction, wallJumpForceY);
+        // Sale SIEMPRE en dirección opuesta a la pared, ignorando el input
+        float jumpDir = -wallDirection;
+
+        rb.linearVelocity = new Vector2(wallJumpForceX * jumpDir, wallJumpForceY);
+
+        // Flip inmediato
+        facingRight = jumpDir > 0;
+        transform.localScale = new Vector3(
+            facingRight ? Mathf.Abs(transform.localScale.x) : -Mathf.Abs(transform.localScale.x),
+            transform.localScale.y,
+            transform.localScale.z);
+
         canDoubleJump = true;
+        StartCoroutine(WallJumpRoutine(jumpDir));
     }
 
-    System.Collections.IEnumerator DashRoutine()
+    IEnumerator WallJumpRoutine(float jumpDir)
+    {
+        isWallJumping = true;
+        float timer = 0f;
+
+        while (timer < wallJumpLockTime)
+        {
+            // Mantiene la velocidad horizontal en la dirección del salto
+            // ignorando completamente el input del jugador
+            rb.linearVelocity = new Vector2(
+                Mathf.Lerp(wallJumpForceX * jumpDir, moveInput * moveSpeed, timer / wallJumpLockTime),
+                rb.linearVelocity.y);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        isWallJumping = false;
+    }
+
+    IEnumerator DashRoutine()
     {
         AudioManager.Instance?.PlayDash();
         isDashing = true;
         canDash = false;
         float dir = facingRight ? 1f : -1f;
+
         rb.linearVelocity = new Vector2(dir * dashForce, 0f);
         rb.gravityScale = 0f;
 
-        yield return new WaitForSeconds(dashDuration);
+        float timer = 0f;
+        while (timer < dashDuration)
+        {
+            // Fuerza Y a 0 en cada frame durante el dash
+            rb.linearVelocity = new Vector2(dir * dashForce, 0f);
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
         rb.gravityScale = 3f;
         isDashing = false;
-
         dashCooldownTimer = dashCooldown;
     }
 
@@ -142,19 +185,24 @@ public class PlayerController : MonoBehaviour
     void HandleWallCheck()
     {
         isTouchingWallRight = Physics2D.Raycast(
-            wallCheckRight.position, Vector2.right, wallCheckDistance, groundLayer);
+            transform.position, Vector2.right, wallCheckDistance, groundLayer);
         isTouchingWallLeft = Physics2D.Raycast(
-            wallCheckLeft.position, Vector2.left, wallCheckDistance, groundLayer);
+            transform.position, Vector2.left, wallCheckDistance, groundLayer);
+
+        if (isTouchingWallRight) wallDirection = 1;
+        else if (isTouchingWallLeft) wallDirection = -1;
     }
 
     void HandleWallSlide()
     {
-        isWallSliding = (isTouchingWallRight || isTouchingWallLeft)
-                        && !isGrounded
-                        && rb.linearVelocity.y < 0;
+        bool onWall = (isTouchingWallRight || isTouchingWallLeft) && !isGrounded;
+
+        isWallSliding = onWall && rb.linearVelocity.y < 0;
 
         if (isWallSliding)
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -wallSlideSpeed);
+        {
+            rb.linearVelocity = new Vector2(0f, -wallSlideSpeed);
+        }
     }
 
     void HandleDashCooldown()

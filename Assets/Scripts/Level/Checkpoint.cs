@@ -16,16 +16,19 @@ public class Checkpoint : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        AudioManager.Instance?.PlayCheckpoint();
         if (activated) return;
         if (!other.CompareTag("Player")) return;
 
         activated = true;
         animator?.SetTrigger("Activated");
+        AudioManager.Instance?.PlayCheckpoint();
+
+        // Guarda en GameSession para que persista
+        GameSession.RespawnPoint = transform.position;
+        GameSession.HasRespawnPoint = true;
 
         PlayerRespawn respawn = other.GetComponent<PlayerRespawn>();
         respawn?.SetRespawnPoint(transform.position);
-
         Debug.Log($"Checkpoint {checkpointId} activado");
     }
 }

@@ -37,10 +37,8 @@ public class LevelResultsManager : MonoBehaviour
         float time = GameTimer.Instance?.ElapsedTime ?? 0f;
         int nivel = SceneManager.GetActiveScene().buildIndex;
 
-        // Desbloquear siguiente nivel
         GameManager.Instance?.UnlockNextLevel();
 
-        // Guardar en BD
         if (GameSession.HasActiveSession)
         {
             DatabaseManager.Instance?.GuardarPartida(
@@ -93,7 +91,7 @@ public class LevelResultsManager : MonoBehaviour
         if (next <= 3)
             SceneManager.LoadScene(next);
         else
-            ShowGameComplete(0); // Sustituir por muertes reales cuando tengamos BD
+            ShowGameComplete(0);
     }
 
     public void GoToMainMenu()

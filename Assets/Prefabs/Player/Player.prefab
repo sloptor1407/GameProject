@@ -386,7 +386,7 @@ MonoBehaviour:
     m_Bits: 256
   wallCheckRight: {fileID: 7158569665633786966}
   wallCheckLeft: {fileID: 4642609524379318068}
-  wallCheckDistance: 0.3
+  wallCheckDistance: 0.5
 --- !u!114 &2439314304571635402
 MonoBehaviour:
   m_ObjectHideFlags: 0

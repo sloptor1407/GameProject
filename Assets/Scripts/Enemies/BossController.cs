@@ -39,7 +39,6 @@ public class BossController : MonoBehaviour
     [SerializeField] UnityEngine.UI.Slider bossHealthBar;
     [SerializeField] TMPro.TextMeshProUGUI bossNameText;
 
-    // State
     int currentPhase = 1;
     int currentHealth;
     int totalMaxHealth;
@@ -56,9 +55,16 @@ public class BossController : MonoBehaviour
     Transform player;
     bool facingRight = true;
 
+    public bool IsWalking => !isAttacking && isAlive && player != null &&
+                     Vector2.Distance(transform.position, player.position) > meleeRange;
+
+    // Cached animator
+    BossAnimator bossAnimator;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        bossAnimator = GetComponentInChildren<BossAnimator>();
     }
 
     void Start()
@@ -78,47 +84,30 @@ public class BossController : MonoBehaviour
         if (bossNameText != null)
             bossNameText.text = "JEFE FINAL";
 
-        // Inicia la batalla
         StartCoroutine(BossIntro());
     }
 
     void Update()
     {
         if (!isAlive || player == null || isCharging) return;
-
         HandleFacing();
-
-        if (currentPhase == 1)
-            HandlePhase1();
-        else
-            HandlePhase2();
-
-        // Timers
+        if (currentPhase == 1) HandlePhase1();
+        else HandlePhase2();
         meleeTimer -= Time.deltaTime;
         rangeTimer -= Time.deltaTime;
         slashTimer -= Time.deltaTime;
         chargeTimer -= Time.deltaTime;
     }
 
-    // Fases
-
     void HandlePhase1()
     {
         float dist = Vector2.Distance(transform.position, player.position);
-
         if (!isAttacking)
         {
-            // Se acerca al jugador
-            if (dist > meleeRange + 0.5f)
-                Move();
-            else
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-
-            // Ataque melee si está cerca
+            if (dist > meleeRange + 0.5f) Move();
+            else rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             if (dist <= meleeRange && meleeTimer <= 0)
                 StartCoroutine(MeleeAttack());
-
-            // Ataque a distancia si está lejos
             else if (dist > meleeRange + 2f && rangeTimer <= 0)
                 StartCoroutine(RangeAttack());
         }
@@ -127,98 +116,77 @@ public class BossController : MonoBehaviour
     void HandlePhase2()
     {
         float dist = Vector2.Distance(transform.position, player.position);
-
         if (!isAttacking)
         {
-            if (dist > meleeRange + 0.5f)
-                Move();
-            else
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-
-            // Tajo que ocupa toda la pantalla
+            if (dist > meleeRange + 0.5f) Move();
+            else rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             if (slashTimer <= 0)
                 StartCoroutine(SlashAttack());
-
-            // Embestida
             else if (chargeTimer <= 0 && dist > 3f)
                 StartCoroutine(ChargeAttack());
         }
     }
 
-    // Ataques Fase 1
-
     IEnumerator MeleeAttack()
     {
         isAttacking = true;
+        bossAnimator?.TriggerAttack(); // animación
         meleeTimer = meleeCooldown;
-
         rb.linearVelocity = Vector2.zero;
-
-        // Pequeño anticipation
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.8f);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             meleeHitPoint.position, meleeRange,
             LayerMask.GetMask("Player"));
-
         foreach (Collider2D hit in hits)
             hit.GetComponent<PlayerStats>()?.ReceiveDamage(meleeDamage);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         isAttacking = false;
     }
 
     IEnumerator RangeAttack()
     {
         isAttacking = true;
+        bossAnimator?.TriggerSpell(); // animación
         rangeTimer = rangeCooldown;
-
         rb.linearVelocity = Vector2.zero;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.8f);
 
         if (projectilePrefab != null && firePoint != null)
         {
             Vector2 dir = (player.position - firePoint.position).normalized;
-            GameObject proj = Instantiate(projectilePrefab,
-                firePoint.position, Quaternion.identity);
+            GameObject proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
             proj.GetComponent<EnemyProjectile>()?.Init(dir, rangeDamage);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         isAttacking = false;
     }
-
-    // Ataques Fase 2
 
     IEnumerator SlashAttack()
     {
         isAttacking = true;
+        bossAnimator?.TriggerCast(); // animación
         slashTimer = slashCooldown;
-
         rb.linearVelocity = Vector2.zero;
-
-        // Aviso visual antes del tajo
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         if (slashPrefab != null)
         {
-            // Instancia el tajo centrado en el boss
-            GameObject slash = Instantiate(slashPrefab,
-                transform.position, Quaternion.identity);
+            GameObject slash = Instantiate(slashPrefab, transform.position, Quaternion.identity);
             Destroy(slash, 1f);
         }
 
-        // Daña al jugador si está en el suelo
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             PlayerController pc = playerObj.GetComponent<PlayerController>();
-            // Solo daña si el jugador está en el suelo (no saltando)
             if (pc != null && pc.IsGrounded)
                 playerObj.GetComponent<PlayerStats>()?.ReceiveDamage(slashDamage);
         }
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(1f);
         isAttacking = false;
     }
 
@@ -227,13 +195,10 @@ public class BossController : MonoBehaviour
         isAttacking = true;
         isCharging = true;
         chargeTimer = chargeCooldown;
-
-        // Pequeño aviso
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(1f);
 
         float dir = facingRight ? 1f : -1f;
         float timer = 0f;
-
         while (timer < chargeDuration)
         {
             rb.linearVelocity = new Vector2(dir * chargeSpeed, rb.linearVelocity.y);
@@ -246,15 +211,13 @@ public class BossController : MonoBehaviour
         isAttacking = false;
     }
 
-    // Daño y fases
-
     public void ReceiveDamage(int amount)
     {
         if (!isAlive) return;
+        bossAnimator?.TriggerHurt(); // animación
 
         currentHealth -= amount;
 
-        // Actualiza la barra de vida
         if (bossHealthBar != null)
             bossHealthBar.value = currentHealth +
                 (currentPhase == 2 ? maxHealthPhase1 : 0);
@@ -273,8 +236,6 @@ public class BossController : MonoBehaviour
         isAttacking = true;
         currentPhase = 2;
         currentHealth = maxHealthPhase2;
-
-        // Efecto de transición
         rb.linearVelocity = Vector2.zero;
         yield return new WaitForSeconds(1.5f);
 
@@ -282,21 +243,23 @@ public class BossController : MonoBehaviour
             bossNameText.text = "JEFE FINAL - FASE 2";
 
         isAttacking = false;
-        Debug.Log("Boss entra en Fase 2");
     }
 
     IEnumerator BossDeath()
     {
         isAlive = false;
+        bossAnimator?.TriggerDeath(); // animación
         rb.linearVelocity = Vector2.zero;
 
         yield return new WaitForSeconds(1.5f);
 
-        // Desactiva colliders
-        foreach (Collider2D col in GetComponents<Collider2D>())
-            col.enabled = false;
+        GameObject door = GameObject.FindGameObjectWithTag("BossDoor");
+        if (door != null)
+        {
+            door.GetComponent<Collider2D>().enabled = false;
+            door.GetComponent<SpriteRenderer>().enabled = false;
+        }
 
-        // Muestra pantalla de juego completado
         int muertes = FindFirstObjectByType<PlayerRespawn>()?.DeathCount ?? 0;
         LevelResultsManager.Instance?.ShowGameComplete(muertes);
 
@@ -305,13 +268,10 @@ public class BossController : MonoBehaviour
 
     IEnumerator BossIntro()
     {
-        // Pequeña pausa antes de que el boss empiece a atacar
         isAttacking = true;
         yield return new WaitForSeconds(2f);
         isAttacking = false;
     }
-
-    // Movimiento
 
     void Move()
     {
@@ -327,13 +287,11 @@ public class BossController : MonoBehaviour
         {
             facingRight = shouldFaceRight;
             transform.localScale = new Vector3(
-                facingRight ? 1 : -1,
+                facingRight ? -transform.localScale.x : Mathf.Abs(transform.localScale.x),
                 transform.localScale.y,
                 transform.localScale.z);
         }
     }
-
-    // Contacto
 
     void OnCollisionEnter2D(Collision2D other)
     {

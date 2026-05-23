@@ -17,7 +17,17 @@ public class PlayerRespawn : MonoBehaviour
     {
         stats = GetComponent<PlayerStats>();
         controller = GetComponent<PlayerController>();
-        respawnPoint = transform.position;
+
+        // Si hay checkpoint guardado en sesión, úsalo
+        if (GameSession.HasRespawnPoint)
+        {
+            respawnPoint = GameSession.RespawnPoint;
+            transform.position = respawnPoint;
+        }
+        else
+        {
+            respawnPoint = transform.position;
+        }
     }
 
     void OnEnable()
@@ -32,9 +42,19 @@ public class PlayerRespawn : MonoBehaviour
 
     void HandleDeath()
     {
-        deathCount++;
-        GameSession.MuertesTotales++;
-        controller.enabled = false;
+        StartCoroutine(DeathRoutine());
+    }
+
+    IEnumerator DeathRoutine()
+    {
+        // Desactiva el input para que no se pueda mover
+        GetComponent<PlayerInputHandler>().enabled = false;
+        GetComponent<PlayerController>().enabled = false;
+
+        // Espera a que termine la animación de muerte
+        yield return new WaitForSeconds(1.5f);
+
+        // Muestra el game over
         LevelResultsManager.Instance?.ShowGameOver();
     }
 
