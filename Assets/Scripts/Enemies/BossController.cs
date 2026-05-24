@@ -82,7 +82,7 @@ public class BossController : MonoBehaviour
         }
 
         if (bossNameText != null)
-            bossNameText.text = "JEFE FINAL";
+            bossNameText.text = "Igryd";
 
         StartCoroutine(BossIntro());
     }
@@ -219,8 +219,12 @@ public class BossController : MonoBehaviour
         currentHealth -= amount;
 
         if (bossHealthBar != null)
-            bossHealthBar.value = currentHealth +
-                (currentPhase == 2 ? maxHealthPhase1 : 0);
+        {
+            float healthTotal = currentPhase == 1
+                ? currentHealth + maxHealthPhase2
+                : currentHealth;
+            bossHealthBar.value = healthTotal;
+        }
 
         if (currentHealth <= 0)
         {
@@ -240,7 +244,7 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         if (bossNameText != null)
-            bossNameText.text = "JEFE FINAL - FASE 2";
+            bossNameText.text = "Igryd - Fase 2";
 
         isAttacking = false;
     }

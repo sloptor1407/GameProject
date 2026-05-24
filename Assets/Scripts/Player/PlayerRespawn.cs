@@ -47,14 +47,13 @@ public class PlayerRespawn : MonoBehaviour
 
     IEnumerator DeathRoutine()
     {
-        // Desactiva el input para que no se pueda mover
         GetComponent<PlayerInputHandler>().enabled = false;
         GetComponent<PlayerController>().enabled = false;
 
-        // Espera a que termine la animación de muerte
-        yield return new WaitForSeconds(1.5f);
+        deathCount++;
+        GameSession.MuertesTotales++;
 
-        // Muestra el game over
+        yield return new WaitForSeconds(1.5f);
         LevelResultsManager.Instance?.ShowGameOver();
     }
 

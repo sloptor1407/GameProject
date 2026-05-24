@@ -87,11 +87,16 @@ public class LevelResultsManager : MonoBehaviour
     public void NextLevel()
     {
         Time.timeScale = 1f;
+
+        // Resetea el checkpoint para el nuevo nivel
+        GameSession.HasRespawnPoint = false;
+        GameSession.RespawnPoint = Vector2.zero;
+
         int next = SceneManager.GetActiveScene().buildIndex + 1;
         if (next <= 3)
             SceneManager.LoadScene(next);
         else
-            ShowGameComplete(0);
+            ShowGameComplete(GameSession.MuertesTotales);
     }
 
     public void GoToMainMenu()
